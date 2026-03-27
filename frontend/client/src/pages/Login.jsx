@@ -1,12 +1,11 @@
 import { useState } from "react"
 import { loginUser } from "../services/api"
-
+import { Link } from "react-router-dom"
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -24,10 +23,8 @@ export default function Login() {
         // ✅ Save token
         localStorage.setItem("token", res.token)
 
-        alert("Login successful")
-
         // 🔥 IMPORTANT FIX (force reload for navbar update)
-        window.location.href = "/chat"
+        window.location.href = "/dashboard"
       } else {
         alert(res?.error || "Login failed")
       }
@@ -41,34 +38,65 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded shadow w-80">
+    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] relative overflow-hidden">
+      
+      {/* Background Glows */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/20 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-500/20 blur-[120px] rounded-full pointer-events-none"></div>
 
-        <h2 className="text-xl font-bold mb-4 text-center">Login</h2>
+      <div className="glass-panel p-8 w-full max-w-md relative z-10 border-white/20 animate-slide-up">
+        
+        <div className="text-center mb-8">
+          <div className="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 items-center justify-center text-3xl shadow-glow mb-4">
+            🔐
+          </div>
+          <h2 className="text-3xl font-display font-bold mb-2 text-white">Welcome Back</h2>
+          <p className="text-gray-400">Sign in to continue to SmartAI Hub</p>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-3 p-2 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1 ml-1">Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              className="glass-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-3 p-2 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1 ml-1">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="glass-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if(e.key === 'Enter') handleLogin();
+              }}
+            />
+          </div>
 
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full bg-blue-600 text-white p-2 rounded"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="btn-primary w-full mt-6"
+          >
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Logging in...
+              </div>
+            ) : "Login"}
+          </button>
+        </div>
+        
+        <p className="text-center text-gray-400 mt-6 text-sm">
+          Don't have an account? <Link to="/register" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">Register here</Link>
+        </p>
 
       </div>
     </div>

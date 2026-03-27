@@ -1,2 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-dark-900: #0a0a0f;
+  --color-dark-800: #13131a;
+  --color-dark-700: #1c1c26;
+  --color-primary-300: #c4b5fd;
+  --color-primary-400: #a78bfa;
+  --color-primary-500: #8b5cf6;
+  --color-primary-600: #7c3aed;
+  --color-primary-800: #5b21b6;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --font-display: 'Outfit', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+  --shadow-glow-strong: 0 0 30px rgba(139, 92, 246, 0.5);
+  
+  --animate-blob: blob 7s infinite;
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-up: slideUp 0.5s ease-out forwards;
+  
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--color-dark-900);
+    color: white;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+    color: white;
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  /* Premium Glassmorphism Cards */
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg transition-all duration-300;
+  }
+  
+  .glass-panel:hover {
+    @apply border-primary-500/50 shadow-glow bg-white/10;
+  }
+  
+  /* Inputs */
+  .glass-input {
+    @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all;
+  }
+  
+  /* Glowing Primary Button */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 active:scale-95;
+  }
+  
+  /* Outline / Secondary Button */
+  .btn-outline {
+    @apply bg-transparent border border-white/20 hover:border-white/50 hover:bg-white/5 text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 active:scale-95;
+  }
+}

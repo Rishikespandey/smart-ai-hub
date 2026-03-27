@@ -96,7 +96,7 @@ export const loginUser = async (req, res) => {
 // 🔥 GET CURRENT USER (MOST IMPORTANT)
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user).select("credits")
+    const user = await User.findById(req.user).select("-password")
 
     if (!user) {
       return res.status(404).json({
@@ -107,6 +107,10 @@ export const getMe = async (req, res) => {
 
     res.json({
       success: true,
+      user: {
+        name: user.name,
+        email: user.email
+      },
       credits: user.credits
     })
 

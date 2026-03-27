@@ -2,7 +2,8 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext" // ✅ FIXED
 
 import Navbar from "./components/Navbar"
-import Home from "./pages/Dashboard"
+import Home from "./pages/Home"
+import Dashboard from "./pages/Dashboard"
 import Chat from "./pages/Chat"
 import ImageGen from "./pages/ImageGen"
 import Resume from "./pages/Resume"
@@ -28,8 +29,7 @@ function AppContent() {
     location.pathname === "/login" || location.pathname === "/register"
 
   return (
-    <div className="min-h-screen bg-gray-100">
-
+    <div className="min-h-screen flex flex-col pt-0">
       {!hideNavbar && <Navbar />}
 
       <Routes>
@@ -40,6 +40,11 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
 
         {/* Protected */}
+        <Route
+          path="/dashboard"
+          element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+        />
+
         <Route
           path="/chat"
           element={<ProtectedRoute><Chat /></ProtectedRoute>}

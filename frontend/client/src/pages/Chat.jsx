@@ -146,56 +146,88 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-200">
+    <div className="flex h-[calc(100vh-4rem)] max-w-7xl mx-auto w-full p-4 md:p-6 gap-6 relative z-10">
 
       {/* Sidebar */}
-      <div className="w-64 bg-gray-900 text-white p-4 flex flex-col shadow-lg">
+      <div className="hidden md:flex flex-col w-72 glass-panel p-4 h-full relative overflow-hidden shrink-0">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 blur-[50px] pointer-events-none"></div>
+
         <button
           onClick={handleNewChat}
-          className="bg-blue-600 p-2 rounded mb-4 hover:bg-blue-700 transition font-semibold"
+          className="btn-primary w-full py-3 mb-6 font-semibold flex items-center justify-center gap-2 shadow-glow"
         >
-          + New Chat
+          <span>✏️</span> New Chat
         </button>
 
-        <div className="flex-1 overflow-y-auto space-y-2">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
+          Recent Conversations
+        </h3>
+
+        <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2">
           {chatList.map((chat) => (
             <div
               key={chat._id}
               onClick={() => handleSelectChat(chat)}
-              className="p-2 bg-gray-700 rounded cursor-pointer hover:bg-gray-600 text-sm"
+              className={`p-3 rounded-xl cursor-pointer text-sm transition-all border ${
+                chatId === chat._id
+                  ? "bg-primary-500/20 border-primary-500/30 text-primary-300"
+                  : "bg-white/5 border-transparent text-gray-400 hover:bg-white/10 hover:text-gray-200"
+              }`}
             >
-              Chat {chat._id.slice(-4)}
+              <div className="truncate flex items-center gap-2">
+                <span className="text-gray-500">💬</span> Chat {chat._id.slice(-6)}
+              </div>
             </div>
           ))}
+          {chatList.length === 0 && (
+            <p className="text-sm text-gray-500 text-center py-4">No recent chats.</p>
+          )}
         </div>
       </div>
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
-
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col h-full glass-panel relative overflow-hidden">
+        
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 font-semibold shadow">
-          SmartAI Chat 🚀
+        <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5 z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-glow text-xl">
+              🤖
+            </div>
+            <div>
+              <h2 className="font-semibold text-white">SmartAI Assistant</h2>
+              <p className="text-xs text-primary-400 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span> Online
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar z-10">
+          {messages.length === 0 && (
+            <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
+              <div className="text-6xl mb-4 grayscale">👋</div>
+              <h3 className="text-xl font-bold text-white mb-2">How can I help you today?</h3>
+              <p className="text-gray-400 text-sm max-w-sm">Ask me to write code, compose an email, or spark your imagination.</p>
+            </div>
+          )}
 
           {messages.map((msg, i) => (
             <div
               key={msg.id || i}
               className={`flex ${
                 msg.role === "user" ? "justify-end" : "justify-start"
-              }`}
+              } animate-slide-up origin-bottom`}
             >
               <div
-                className={`px-4 py-3 rounded-2xl max-w-[75%] text-sm shadow-md relative ${
+                className={`relative px-5 py-3.5 rounded-2xl max-w-[85%] md:max-w-[75%] text-sm md:text-base leading-relaxed tracking-wide shadow-lg group ${
                   msg.role === "user"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-800"
+                    ? "bg-gradient-to-br from-primary-600/80 to-accent-600/80 text-white rounded-br-sm border border-primary-400/20"
+                    : "bg-white/5 text-gray-200 rounded-bl-sm border border-white/10 backdrop-blur-md"
                 }`}
               >
-                <div className="prose prose-sm max-w-none">
+                <div className="prose prose-sm prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-dark-900/80 prose-pre:border prose-pre:border-white/10">
                   <ReactMarkdown>
                     {String(msg.content || "")}
                   </ReactMarkdown>
@@ -204,41 +236,48 @@ export default function Chat() {
                 {msg.role === "ai" && (
                   <button
                     onClick={() => copyText(msg.content, i)}
-                    className="absolute top-1 right-2 text-xs text-gray-400 hover:text-black"
+                    className="absolute bottom-2 right-[-60px] text-xs text-gray-500 hover:text-white bg-dark-800/80 border border-white/10 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    {msg.copied ? "Copied ✅" : "Copy"}
+                    {msg.copied ? "Copied!" : "Copy"}
                   </button>
                 )}
               </div>
             </div>
           ))}
-
           <div ref={bottomRef}></div>
         </div>
 
         {/* Input */}
-        <div className="p-4 bg-white border-t flex gap-2">
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask anything..."
-            className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                handleSend()
-              }
-            }}
-          />
-
-          <button
-            onClick={handleSend}
-            disabled={loading || cooldown}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full"
-          >
-            {loading ? "..." : cooldown ? "Wait..." : "Send"}
-          </button>
+        <div className="p-4 bg-dark-800/50 border-t border-white/10 z-10">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Message SmartAI..."
+              className="w-full bg-black/40 text-white border border-white/10 rounded-full pl-6 pr-24 py-4 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  handleSend()
+                }
+              }}
+            />
+            <button
+              onClick={handleSend}
+              disabled={loading || cooldown || !message.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-400 hover:to-accent-400 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-glow transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              ) : (
+                <span className="translate-x-[-1px] mb-[1px]">➔</span>
+              )}
+            </button>
+          </div>
+          <p className="text-center text-xs text-gray-500 mt-3 hidden md:block">
+            SmartAI can make mistakes. Consider verifying important information.
+          </p>
         </div>
 
       </div>

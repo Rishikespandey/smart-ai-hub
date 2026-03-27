@@ -5,9 +5,10 @@ const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [credits, setCredits] = useState(0)
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const loadCredits = async () => {
+    const loadData = async () => {
       try {
         const token = localStorage.getItem("token")
         if (!token) return
@@ -21,10 +22,11 @@ export const AuthProvider = ({ children }) => {
           }
         )
 
-        console.log("🔥 CREDIT API:", res.data)
+        console.log("🔥 AUTH API:", res.data)
 
         if (res.data.success) {
           setCredits(res.data.credits)
+          setUser(res.data.user)
         }
 
       } catch (err) {
@@ -32,11 +34,11 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    loadCredits()
+    loadData()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ credits, setCredits }}>
+    <AuthContext.Provider value={{ credits, setCredits, user, setUser }}>
       {children}
     </AuthContext.Provider>
   )
