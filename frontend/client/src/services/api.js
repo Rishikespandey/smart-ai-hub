@@ -25,7 +25,7 @@ const getAuthHeaders = () => {
 // 🔹 Register
 export const registerUser = async (userData) => {
   try {
-    const res = await axios.post(`${API_BASE}/auth/register`, userData)
+    const res = await axios.post(`${API_BASE}/api/auth/register`, userData)
     return res.data
   } catch (error) {
     console.error("register error:", error)
@@ -36,7 +36,7 @@ export const registerUser = async (userData) => {
 // 🔹 Login
 export const loginUser = async (userData) => {
   try {
-    const res = await axios.post(`${API_BASE}/auth/login`, userData)
+    const res = await axios.post(`${API_BASE}/api/auth/login`, userData)
     return res.data
   } catch (error) {
     console.error("login error:", error)
@@ -68,7 +68,7 @@ export const fetchChats = async () => {
 export const sendChatMessage = async (message, chatId) => {
   try {
     const res = await axios.post(
-      `${API_BASE}/chat`,
+      `${API_BASE}/api/chat`,
       { message, chatId },
       getAuthHeaders()
     )
@@ -89,7 +89,7 @@ export const sendChatMessage = async (message, chatId) => {
 export const generateImage = async (prompt) => {
   try {
     const res = await axios.post(
-      `${API_BASE}/image`,
+      `${API_BASE}/api/image`,
       { prompt },
       getAuthHeaders()
     )
@@ -110,7 +110,7 @@ export const generateImage = async (prompt) => {
 export const summarizeNotes = async (text) => {
   try {
     const res = await axios.post(
-      `${API_BASE}/notes/summarize`,
+      `${API_BASE}/api/notes/summarize`,
       { text },
       getAuthHeaders()
     )
